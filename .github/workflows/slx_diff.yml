@@ -1,1 +1,29 @@
 
+name: Compare Simulink Versions
+
+on:
+  push:
+    paths:
+      - 'projects/ExampleProject/versions/*.slx'
+
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Run block comparison
+        run: python3 tracker/slx_diff.py
+
+      - name: Commit updated change_log.txt
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add projects/ExampleProject/change_log.txt
+          git commit -m "Update change log" || echo "No changes to commit"
+          git push
