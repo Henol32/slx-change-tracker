@@ -1,0 +1,26 @@
+name: Run Simulink Diff Script
+
+on:
+  workflow_dispatch:  # allows you to manually trigger the action
+
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install scipy h5py
+
+      - name: Run Simulink diff script
+        run: python tracker/slx_diff.py
+
+      - name: Show change log
+        run: cat projects/ExampleProject/change_log.txt
